@@ -1,0 +1,2056 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>StudyAI — Study Fast & AI Tools</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              500: "#6366f1",
+              600: "#4f46e5",
+              700: "#4338ca"
+            }
+          },
+          boxShadow: {
+            soft: "0 15px 40px rgba(15,23,42,.08)"
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background:
+        radial-gradient(circle at 10% 0%, rgba(99,102,241,.12), transparent 30%),
+        radial-gradient(circle at 90% 10%, rgba(14,165,233,.10), transparent 28%),
+        #f8fafc;
+    }
+
+    .gradient-text {
+      background: linear-gradient(135deg,#4f46e5,#7c3aed,#0284c7);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    .choice-card {
+      transition: transform .25s ease, box-shadow .25s ease;
+    }
+
+    .choice-card:hover {
+      transform: translateY(-7px);
+      box-shadow: 0 20px 50px rgba(15,23,42,.12);
+    }
+
+    .video-card {
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+
+    .video-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 18px 40px rgba(15,23,42,.10);
+    }
+
+    .tool-card {
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+
+    .tool-card:hover {
+      transform: translateY(-4px);
+    }
+
+    .hidden-tool {
+      display: none;
+    }
+
+    .tip-animation {
+      animation: tipIn .3s ease;
+    }
+
+    @keyframes tipIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Flexible card layout */
+    .choice-layout {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+    }
+
+    .choice-layout > button {
+      flex: 1 1 280px;
+    }
+
+    /* Dark mode */
+    body.dark-mode {
+      color: #e2e8f0;
+      background:
+        radial-gradient(circle at 10% 0%, rgba(99,102,241,.14), transparent 30%),
+        radial-gradient(circle at 90% 10%, rgba(14,165,233,.12), transparent 28%),
+        #0f172a;
+    }
+
+    body.dark-mode .bg-white,
+    body.dark-mode header,
+    body.dark-mode footer {
+      background-color: #111827 !important;
+      color: #e2e8f0;
+    }
+
+    body.dark-mode .bg-slate-50,
+    body.dark-mode .bg-slate-100 {
+      background-color: #1e293b !important;
+    }
+
+    body.dark-mode .text-slate-900,
+    body.dark-mode .text-slate-800,
+    body.dark-mode .text-slate-700,
+    body.dark-mode .text-slate-600 {
+      color: #e2e8f0 !important;
+    }
+
+    body.dark-mode .text-slate-500,
+    body.dark-mode .text-slate-400 {
+      color: #a8b4c7 !important;
+    }
+
+    body.dark-mode .border-slate-200,
+    body.dark-mode .border-slate-200\/80 {
+      border-color: #334155 !important;
+    }
+
+    body.dark-mode input,
+    body.dark-mode textarea,
+    body.dark-mode select {
+      background-color: #1e293b !important;
+      color: #f8fafc !important;
+      border-color: #475569 !important;
+    }
+
+    body.dark-mode input::placeholder,
+    body.dark-mode textarea::placeholder {
+      color: #94a3b8;
+    }
+
+    body.dark-mode .choice-card,
+    body.dark-mode .video-card,
+    body.dark-mode .tool-card {
+      background-color: #111827 !important;
+      border-color: #334155 !important;
+    }
+
+    body.dark-mode .bg-indigo-50 {
+      background-color: #312e81 !important;
+    }
+
+    body.dark-mode .text-indigo-700 {
+      color: #c7d2fe !important;
+    }
+
+    body.dark-mode .bg-red-100 {
+      background-color: #7f1d1d !important;
+    }
+
+    body.dark-mode .text-red-700 {
+      color: #fecaca !important;
+    }
+
+    #themeToggle {
+      white-space: nowrap;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+  </style>
+</head>
+
+<body class="min-h-screen text-slate-900">
+
+<!-- =========================================================
+     HEADER
+========================================================= -->
+
+<header class="sticky top-0 z-50 border-b border-slate-200/80 bg-white/90 backdrop-blur-xl">
+
+  <div class="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 lg:px-8">
+
+    <button onclick="showPage('home')" class="flex items-center gap-3">
+
+      <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-600 to-violet-600 text-xl font-black text-white shadow-lg">
+        ✦
+      </div>
+
+      <div class="text-left">
+        <div class="font-extrabold tracking-tight">
+          Study<span class="text-indigo-600">AI</span>
+        </div>
+
+        <div class="text-xs text-slate-500">
+          Student study hub
+        </div>
+      </div>
+
+    </button>
+
+    <div class="flex items-center gap-2">
+      <button
+        id="themeToggle"
+        type="button"
+        onclick="toggleDarkMode()"
+        aria-label="Switch to dark mode"
+        class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-bold text-slate-700 hover:bg-slate-100"
+      >
+        🌙 Dark
+      </button>
+
+      <button
+        id="backButton"
+        onclick="showPage('home')"
+        class="hidden rounded-xl bg-slate-100 px-4 py-2 text-sm font-bold text-slate-700 hover:bg-slate-200"
+      >
+        ← Home
+      </button>
+    </div>
+
+  </div>
+
+</header>
+
+
+<!-- =========================================================
+     HOME
+========================================================= -->
+
+<section id="homePage" class="page active">
+
+  <main class="px-5 pb-20 pt-16 lg:px-8 lg:pt-24">
+
+    <div class="mx-auto max-w-6xl text-center">
+
+      <div class="mb-5 inline-flex rounded-full border border-indigo-100 bg-indigo-50 px-4 py-2 text-sm font-bold text-indigo-700">
+        🎓 Your student AI hub
+      </div>
+
+      <h1 class="text-5xl font-black tracking-tight sm:text-6xl lg:text-7xl">
+
+        Study smarter with
+
+        <span class="gradient-text">
+          StudyAI
+        </span>
+
+      </h1>
+
+      <p class="mx-auto mt-6 max-w-2xl text-lg leading-8 text-slate-600">
+        Learn faster with useful study videos, practical study tips,
+        and a directory of AI tools for students.
+      </p>
+
+
+      <!-- TWO MAIN OPTIONS -->
+
+      <div class="choice-layout mx-auto mt-12 max-w-4xl">
+
+
+        <!-- STUDY FAST -->
+
+        <button
+          onclick="showPage('study')"
+          class="choice-card group rounded-3xl border border-slate-200 bg-white p-8 text-left shadow-soft"
+        >
+
+          <div class="flex items-center justify-between">
+
+            <div class="flex h-16 w-16 items-center justify-center rounded-2xl bg-red-100 text-3xl">
+              ▶️
+            </div>
+
+            <span class="text-2xl text-slate-300 transition group-hover:text-red-500">
+              →
+            </span>
+
+          </div>
+
+          <h2 class="mt-7 text-2xl font-black">
+            Study Fast
+          </h2>
+
+          <p class="mt-3 leading-7 text-slate-600">
+            Find useful YouTube study videos, learn effective study
+            techniques, use a focus timer, and discover quick tips.
+          </p>
+
+          <div class="mt-6 inline-flex rounded-xl bg-red-600 px-5 py-3 text-sm font-bold text-white group-hover:bg-red-700">
+            Start Studying →
+          </div>
+
+        </button>
+
+
+        <!-- AI TOOLS -->
+
+        <button
+          onclick="showPage('tools')"
+          class="choice-card group rounded-3xl border border-slate-200 bg-white p-8 text-left shadow-soft"
+        >
+
+          <div class="flex items-center justify-between">
+
+            <div class="flex h-16 w-16 items-center justify-center rounded-2xl bg-violet-100 text-3xl">
+              🤖
+            </div>
+
+            <span class="text-2xl text-slate-300 transition group-hover:text-violet-500">
+              →
+            </span>
+
+          </div>
+
+          <h2 class="mt-7 text-2xl font-black">
+            AI Tools
+          </h2>
+
+          <p class="mt-3 leading-7 text-slate-600">
+            Explore AI tools for research, writing, mathematics,
+            studying, productivity, and school projects.
+          </p>
+
+          <div class="mt-6 inline-flex rounded-xl bg-violet-600 px-5 py-3 text-sm font-bold text-white group-hover:bg-violet-700">
+            Explore AI Tools →
+          </div>
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </main>
+
+</section>
+
+
+<!-- =========================================================
+     STUDY FAST PAGE
+========================================================= -->
+
+<section id="studyPage" class="page">
+
+  <main class="px-5 py-12 lg:px-8 lg:py-16">
+
+    <div class="mx-auto max-w-7xl">
+
+      <button
+        onclick="showPage('home')"
+        class="mb-6 text-sm font-bold text-indigo-600 hover:text-indigo-800"
+      >
+        ← Back to Home
+      </button>
+
+
+      <div class="mb-10">
+
+        <div class="inline-flex rounded-full bg-red-100 px-3 py-1 text-xs font-bold uppercase tracking-wider text-red-700">
+          Study Fast
+        </div>
+
+        <h1 class="mt-3 text-4xl font-black tracking-tight sm:text-5xl">
+          Learn faster. Study smarter.
+        </h1>
+
+        <p class="mt-4 max-w-2xl text-slate-600">
+          Watch useful study videos, try different study techniques,
+          and use the tools below to make your study sessions more effective.
+        </p>
+
+      </div>
+
+
+      <!-- =====================================================
+           QUICK SEARCH
+      ====================================================== -->
+
+      <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-soft">
+
+        <div class="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
+
+          <div>
+
+            <h2 class="text-xl font-black">
+              🔎 Find a study video
+            </h2>
+
+            <p class="mt-1 text-sm text-slate-500">
+              Search YouTube for the topic you want to learn.
+            </p>
+
+          </div>
+
+
+          <div class="flex w-full max-w-xl gap-2">
+
+            <input
+              id="youtubeSearch"
+              type="text"
+              placeholder="Example: biology study tips"
+              class="min-w-0 flex-1 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-red-500 focus:bg-white focus:ring-4 focus:ring-red-100"
+            >
+
+            <button
+              onclick="searchYouTube()"
+              class="rounded-xl bg-red-600 px-5 py-3 text-sm font-bold text-white hover:bg-red-700"
+            >
+              Search
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- =====================================================
+           POPULAR STUDY TOPICS
+      ====================================================== -->
+
+      <div class="mt-8">
+
+        <div class="mb-5">
+
+          <h2 class="text-2xl font-black">
+            Popular study topics
+          </h2>
+
+          <p class="mt-1 text-sm text-slate-500">
+            Choose a topic to find study videos.
+          </p>
+
+        </div>
+
+
+        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+
+
+          <button
+            onclick="youtubeTopic('how to study effectively')"
+            class="video-card rounded-2xl border border-slate-200 bg-white p-5 text-left shadow-soft"
+          >
+
+            <div class="text-3xl">
+              📚
+            </div>
+
+            <h3 class="mt-4 font-black">
+              Study Effectively
+            </h3>
+
+            <p class="mt-1 text-sm text-slate-500">
+              Learn how to study better.
+            </p>
+
+            <span class="mt-4 inline-block text-sm font-bold text-red-600">
+              Watch videos →
+            </span>
+
+          </button>
+
+
+          <button
+            onclick="youtubeTopic('how to memorize faster')"
+            class="video-card rounded-2xl border border-slate-200 bg-white p-5 text-left shadow-soft"
+          >
+
+            <div class="text-3xl">
+              🧠
+            </div>
+
+            <h3 class="mt-4 font-black">
+              Memorization
+            </h3>
+
+            <p class="mt-1 text-sm text-slate-500">
+              Techniques for remembering information.
+            </p>
+
+            <span class="mt-4 inline-block text-sm font-bold text-red-600">
+              Watch videos →
+            </span>
+
+          </button>
+
+
+          <button
+            onclick="youtubeTopic('Pomodoro study technique')"
+            class="video-card rounded-2xl border border-slate-200 bg-white p-5 text-left shadow-soft"
+          >
+
+            <div class="text-3xl">
+              ⏱️
+            </div>
+
+            <h3 class="mt-4 font-black">
+              Pomodoro
+            </h3>
+
+            <p class="mt-1 text-sm text-slate-500">
+              Focus using timed study sessions.
+            </p>
+
+            <span class="mt-4 inline-block text-sm font-bold text-red-600">
+              Watch videos →
+            </span>
+
+          </button>
+
+
+          <button
+            onclick="youtubeTopic('how to take better notes')"
+            class="video-card rounded-2xl border border-slate-200 bg-white p-5 text-left shadow-soft"
+          >
+
+            <div class="text-3xl">
+              📝
+            </div>
+
+            <h3 class="mt-4 font-black">
+              Note Taking
+            </h3>
+
+            <p class="mt-1 text-sm text-slate-500">
+              Improve your notes and recall.
+            </p>
+
+            <span class="mt-4 inline-block text-sm font-bold text-red-600">
+              Watch videos →
+            </span>
+
+          </button>
+
+
+          <button
+            onclick="youtubeTopic('exam study tips')"
+            class="video-card rounded-2xl border border-slate-200 bg-white p-5 text-left shadow-soft"
+          >
+
+            <div class="text-3xl">
+              🎯
+            </div>
+
+            <h3 class="mt-4 font-black">
+              Exam Preparation
+            </h3>
+
+            <p class="mt-1 text-sm text-slate-500">
+              Prepare for exams efficiently.
+            </p>
+
+            <span class="mt-4 inline-block text-sm font-bold text-red-600">
+              Watch videos →
+            </span>
+
+          </button>
+
+
+          <button
+            onclick="youtubeTopic('how to focus while studying')"
+            class="video-card rounded-2xl border border-slate-200 bg-white p-5 text-left shadow-soft"
+          >
+
+            <div class="text-3xl">
+              🎧
+            </div>
+
+            <h3 class="mt-4 font-black">
+              Focus
+            </h3>
+
+            <p class="mt-1 text-sm text-slate-500">
+              Stop distractions and concentrate.
+            </p>
+
+            <span class="mt-4 inline-block text-sm font-bold text-red-600">
+              Watch videos →
+            </span>
+
+          </button>
+
+
+          <button
+            onclick="youtubeTopic('active recall and spaced repetition')"
+            class="video-card rounded-2xl border border-slate-200 bg-white p-5 text-left shadow-soft"
+          >
+
+            <div class="text-3xl">
+              🔄
+            </div>
+
+            <h3 class="mt-4 font-black">
+              Active Recall
+            </h3>
+
+            <p class="mt-1 text-sm text-slate-500">
+              Build stronger memory.
+            </p>
+
+            <span class="mt-4 inline-block text-sm font-bold text-red-600">
+              Watch videos →
+            </span>
+
+          </button>
+
+
+          <button
+            onclick="youtubeTopic('student productivity tips')"
+            class="video-card rounded-2xl border border-slate-200 bg-white p-5 text-left shadow-soft"
+          >
+
+            <div class="text-3xl">
+              ⚡
+            </div>
+
+            <h3 class="mt-4 font-black">
+              Productivity
+            </h3>
+
+            <p class="mt-1 text-sm text-slate-500">
+              Get more done with less stress.
+            </p>
+
+            <span class="mt-4 inline-block text-sm font-bold text-red-600">
+              Watch videos →
+            </span>
+
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <!-- =====================================================
+           STUDY TIPS
+      ====================================================== -->
+
+      <div class="mt-12">
+
+        <div class="mb-5">
+
+          <div class="inline-flex rounded-full bg-indigo-100 px-3 py-1 text-xs font-bold uppercase tracking-wider text-indigo-700">
+            Quick Tips
+          </div>
+
+          <h2 class="mt-3 text-3xl font-black">
+            Study tips you can use today
+          </h2>
+
+        </div>
+
+
+        <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+
+
+          <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-soft">
+
+            <div class="text-3xl">
+              🧠
+            </div>
+
+            <h3 class="mt-4 text-lg font-black">
+              Use active recall
+            </h3>
+
+            <p class="mt-2 text-sm leading-6 text-slate-600">
+              Close your notes and try to explain what you remember.
+              This turns studying into retrieval practice instead of
+              simply rereading.
+            </p>
+
+          </div>
+
+
+          <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-soft">
+
+            <div class="text-3xl">
+              🔁
+            </div>
+
+            <h3 class="mt-4 text-lg font-black">
+              Space your studying
+            </h3>
+
+            <p class="mt-2 text-sm leading-6 text-slate-600">
+              Instead of doing everything in one session, review
+              important material across several days.
+            </p>
+
+          </div>
+
+
+          <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-soft">
+
+            <div class="text-3xl">
+              📱
+            </div>
+
+            <h3 class="mt-4 text-lg font-black">
+              Remove distractions
+            </h3>
+
+            <p class="mt-2 text-sm leading-6 text-slate-600">
+              Put unnecessary notifications and distracting websites
+              out of reach during your study session.
+            </p>
+
+          </div>
+
+
+          <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-soft">
+
+            <div class="text-3xl">
+              🗣️
+            </div>
+
+            <h3 class="mt-4 text-lg font-black">
+              Teach the topic
+            </h3>
+
+            <p class="mt-2 text-sm leading-6 text-slate-600">
+              Explain the concept as if you were teaching someone else.
+              Gaps in your explanation reveal what you need to review.
+            </p>
+
+          </div>
+
+
+          <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-soft">
+
+            <div class="text-3xl">
+              ✍️
+            </div>
+
+            <h3 class="mt-4 text-lg font-black">
+              Practice, don't just read
+            </h3>
+
+            <p class="mt-2 text-sm leading-6 text-slate-600">
+              Use practice questions, problems, flashcards, and
+              exercises to check whether you can actually use the material.
+            </p>
+
+          </div>
+
+
+          <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-soft">
+
+            <div class="text-3xl">
+              😴
+            </div>
+
+            <h3 class="mt-4 text-lg font-black">
+              Protect your sleep
+            </h3>
+
+            <p class="mt-2 text-sm leading-6 text-slate-600">
+              Avoid turning every study session into an all-nighter.
+              Regular sleep is an important part of learning and memory.
+            </p>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- =====================================================
+           RANDOM TIP
+      ====================================================== -->
+
+      <div class="mt-12 rounded-3xl bg-gradient-to-br from-indigo-600 to-violet-700 p-8 text-white shadow-xl">
+
+        <div class="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+
+          <div>
+
+            <div class="text-sm font-bold uppercase tracking-wider text-indigo-200">
+              💡 Random Study Tip
+            </div>
+
+            <p
+              id="randomTip"
+              class="tip-animation mt-3 max-w-3xl text-xl font-bold leading-8"
+            >
+              Start with the hardest task while your attention is fresh.
+            </p>
+
+          </div>
+
+
+          <button
+            onclick="newTip()"
+            class="shrink-0 rounded-xl bg-white px-5 py-3 text-sm font-bold text-indigo-700 hover:bg-indigo-50"
+          >
+            New Tip
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <!-- =====================================================
+           POMODORO TIMER
+      ====================================================== -->
+
+      <div class="mt-12 grid gap-6 lg:grid-cols-2">
+
+
+        <div class="rounded-3xl border border-slate-200 bg-white p-8 text-center shadow-soft">
+
+          <div class="text-sm font-bold uppercase tracking-wider text-slate-400">
+            Focus Timer
+          </div>
+
+          <div
+            id="timer"
+            class="mt-4 text-6xl font-black tracking-tight text-slate-900"
+          >
+            25:00
+          </div>
+
+          <p
+            id="timerStatus"
+            class="mt-2 text-sm text-slate-500"
+          >
+            Focus for 25 minutes.
+          </p>
+
+
+          <div class="mt-6 flex flex-wrap justify-center gap-2">
+
+            <button
+              onclick="startTimer()"
+              class="rounded-xl bg-indigo-600 px-5 py-3 text-sm font-bold text-white hover:bg-indigo-700"
+            >
+              Start
+            </button>
+
+            <button
+              onclick="pauseTimer()"
+              class="rounded-xl bg-slate-100 px-5 py-3 text-sm font-bold text-slate-700 hover:bg-slate-200"
+            >
+              Pause
+            </button>
+
+            <button
+              onclick="resetTimer()"
+              class="rounded-xl bg-slate-100 px-5 py-3 text-sm font-bold text-slate-700 hover:bg-slate-200"
+            >
+              Reset
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <div class="rounded-3xl border border-slate-200 bg-white p-8 shadow-soft">
+
+          <h2 class="text-xl font-black">
+            ✅ Quick Study Checklist
+          </h2>
+
+          <p class="mt-1 text-sm text-slate-500">
+            Check these off during your study session.
+          </p>
+
+
+          <div class="mt-6 space-y-3">
+
+            <label class="flex cursor-pointer items-center gap-3 rounded-xl bg-slate-50 p-4 hover:bg-slate-100">
+
+              <input
+                type="checkbox"
+                class="check-item h-5 w-5 accent-indigo-600"
+              >
+
+              <span class="text-sm font-medium">
+                Put my phone away
+              </span>
+
+            </label>
+
+
+            <label class="flex cursor-pointer items-center gap-3 rounded-xl bg-slate-50 p-4 hover:bg-slate-100">
+
+              <input
+                type="checkbox"
+                class="check-item h-5 w-5 accent-indigo-600"
+              >
+
+              <span class="text-sm font-medium">
+                Choose one clear study goal
+              </span>
+
+            </label>
+
+
+            <label class="flex cursor-pointer items-center gap-3 rounded-xl bg-slate-50 p-4 hover:bg-slate-100">
+
+              <input
+                type="checkbox"
+                class="check-item h-5 w-5 accent-indigo-600"
+              >
+
+              <span class="text-sm font-medium">
+                Study actively instead of only rereading
+              </span>
+
+            </label>
+
+
+            <label class="flex cursor-pointer items-center gap-3 rounded-xl bg-slate-50 p-4 hover:bg-slate-100">
+
+              <input
+                type="checkbox"
+                class="check-item h-5 w-5 accent-indigo-600"
+              >
+
+              <span class="text-sm font-medium">
+                Take a short break after focused work
+              </span>
+
+            </label>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+</section>
+
+
+<!-- =========================================================
+     AI TOOLS PAGE
+========================================================= -->
+
+<section id="toolsPage" class="page">
+
+  <main class="px-5 py-12 lg:px-8 lg:py-16">
+
+    <div class="mx-auto max-w-7xl">
+
+      <button
+        onclick="showPage('home')"
+        class="mb-5 text-sm font-bold text-indigo-600 hover:text-indigo-800"
+      >
+        ← Back to Home
+      </button>
+
+
+      <div class="text-center">
+
+        <div class="inline-flex rounded-full bg-violet-100 px-3 py-1 text-xs font-bold uppercase tracking-wider text-violet-700">
+          AI Directory
+        </div>
+
+        <h1 class="mt-3 text-4xl font-black tracking-tight sm:text-5xl">
+          AI Tools for Students
+        </h1>
+
+        <p class="mx-auto mt-4 max-w-2xl text-slate-600">
+          Explore tools for research, writing, studying,
+          mathematics, and productivity.
+        </p>
+
+      </div>
+
+
+      <!-- SEARCH -->
+
+      <div class="mx-auto mt-8 max-w-2xl">
+
+        <div class="flex items-center rounded-2xl border border-slate-200 bg-white p-2 shadow-soft">
+
+          <span class="px-3 text-xl">
+            🔎
+          </span>
+
+          <input
+            id="toolSearch"
+            type="search"
+            placeholder="Search AI tools..."
+            class="w-full bg-transparent px-2 py-3 text-sm outline-none"
+          >
+
+        </div>
+
+      </div>
+
+
+      <!-- FILTERS -->
+
+      <div class="mt-5 flex flex-wrap justify-center gap-2">
+
+        <button data-filter="all" class="tool-filter rounded-full bg-slate-900 px-4 py-2 text-sm font-bold text-white">
+          All
+        </button>
+
+        <button data-filter="research" class="tool-filter rounded-full bg-white px-4 py-2 text-sm font-bold text-slate-600 ring-1 ring-slate-200">
+          Research
+        </button>
+
+        <button data-filter="writing" class="tool-filter rounded-full bg-white px-4 py-2 text-sm font-bold text-slate-600 ring-1 ring-slate-200">
+          Writing
+        </button>
+
+        <button data-filter="study" class="tool-filter rounded-full bg-white px-4 py-2 text-sm font-bold text-slate-600 ring-1 ring-slate-200">
+          Study
+        </button>
+
+        <button data-filter="productivity" class="tool-filter rounded-full bg-white px-4 py-2 text-sm font-bold text-slate-600 ring-1 ring-slate-200">
+          Productivity
+        </button>
+
+      </div>
+
+
+      <!-- TOOL GRID -->
+
+      <div class="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+
+
+        <!-- 1 -->
+
+        <article
+          class="tool-card rounded-3xl border border-slate-200 bg-white p-6 shadow-soft"
+          data-tool="chatgpt"
+          data-category="study writing productivity"
+        >
+
+          <div class="flex items-start justify-between">
+
+            <div class="flex items-center gap-4">
+
+              <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-950 text-2xl">
+                🤖
+              </div>
+
+              <div>
+                <h2 class="text-xl font-black">
+                  ChatGPT
+                </h2>
+
+                <p class="text-sm text-slate-500">
+                  General AI assistant
+                </p>
+              </div>
+
+            </div>
+
+            <span class="font-black text-slate-300">
+              #1
+            </span>
+
+          </div>
+
+          <div class="mt-5 flex gap-2">
+
+            <span class="rounded-full bg-indigo-50 px-3 py-1 text-xs font-bold text-indigo-700">
+              Study
+            </span>
+
+            <span class="rounded-full bg-violet-50 px-3 py-1 text-xs font-bold text-violet-700">
+              Writing
+            </span>
+
+          </div>
+
+          <p class="mt-4 text-sm leading-6 text-slate-600">
+            Useful for explanations, brainstorming, summaries,
+            coding, writing help, and study practice.
+          </p>
+
+          <a
+            href="https://chatgpt.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="mt-6 block rounded-xl bg-indigo-600 px-4 py-3 text-center text-sm font-bold text-white hover:bg-indigo-700"
+          >
+            Try ChatGPT →
+          </a>
+
+        </article>
+
+
+        <!-- 2 -->
+
+        <article
+          class="tool-card rounded-3xl border border-slate-200 bg-white p-6 shadow-soft"
+          data-tool="claude"
+          data-category="writing study"
+        >
+
+          <div class="flex items-start justify-between">
+
+            <div class="flex items-center gap-4">
+
+              <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-orange-100 text-2xl">
+                ✨
+              </div>
+
+              <div>
+                <h2 class="text-xl font-black">
+                  Claude
+                </h2>
+
+                <p class="text-sm text-slate-500">
+                  AI writing & analysis
+                </p>
+              </div>
+
+            </div>
+
+            <span class="font-black text-slate-300">
+              #2
+            </span>
+
+          </div>
+
+          <div class="mt-5">
+            <span class="rounded-full bg-violet-50 px-3 py-1 text-xs font-bold text-violet-700">
+              Writing
+            </span>
+          </div>
+
+          <p class="mt-4 text-sm leading-6 text-slate-600">
+            Helpful for drafting, editing, analyzing documents,
+            and working through complex ideas.
+          </p>
+
+          <a
+            href="https://claude.ai/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="mt-6 block rounded-xl bg-indigo-600 px-4 py-3 text-center text-sm font-bold text-white hover:bg-indigo-700"
+          >
+            Try Claude →
+          </a>
+
+        </article>
+
+
+        <!-- 3 -->
+
+        <article
+          class="tool-card rounded-3xl border border-slate-200 bg-white p-6 shadow-soft"
+          data-tool="perplexity"
+          data-category="research study"
+        >
+
+          <div class="flex items-start justify-between">
+
+            <div class="flex items-center gap-4">
+
+              <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-teal-50 text-2xl">
+                🔎
+              </div>
+
+              <div>
+                <h2 class="text-xl font-black">
+                  Perplexity
+                </h2>
+
+                <p class="text-sm text-slate-500">
+                  AI research search
+                </p>
+              </div>
+
+            </div>
+
+            <span class="font-black text-slate-300">
+              #3
+            </span>
+
+          </div>
+
+          <div class="mt-5">
+            <span class="rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700">
+              Research
+            </span>
+          </div>
+
+          <p class="mt-4 text-sm leading-6 text-slate-600">
+            Useful for exploring questions and finding supporting
+            information during research.
+          </p>
+
+          <a
+            href="https://www.perplexity.ai/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="mt-6 block rounded-xl bg-indigo-600 px-4 py-3 text-center text-sm font-bold text-white hover:bg-indigo-700"
+          >
+            Try Perplexity →
+          </a>
+
+        </article>
+
+
+        <!-- 4 -->
+
+        <article
+          class="tool-card rounded-3xl border border-slate-200 bg-white p-6 shadow-soft"
+          data-tool="gemini"
+          data-category="study productivity writing"
+        >
+
+          <div class="flex items-start justify-between">
+
+            <div class="flex items-center gap-4">
+
+              <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50 text-2xl">
+                ✦
+              </div>
+
+              <div>
+                <h2 class="text-xl font-black">
+                  Gemini
+                </h2>
+
+                <p class="text-sm text-slate-500">
+                  Google AI assistant
+                </p>
+              </div>
+
+            </div>
+
+            <span class="font-black text-slate-300">
+              #4
+            </span>
+
+          </div>
+
+          <div class="mt-5">
+            <span class="rounded-full bg-blue-50 px-3 py-1 text-xs font-bold text-blue-700">
+              Productivity
+            </span>
+          </div>
+
+          <p class="mt-4 text-sm leading-6 text-slate-600">
+            Useful for brainstorming, explanations, writing,
+            and productivity tasks.
+          </p>
+
+          <a
+            href="https://gemini.google.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="mt-6 block rounded-xl bg-indigo-600 px-4 py-3 text-center text-sm font-bold text-white hover:bg-indigo-700"
+          >
+            Try Gemini →
+          </a>
+
+        </article>
+
+
+        <!-- 5 -->
+
+        <article
+          class="tool-card rounded-3xl border border-slate-200 bg-white p-6 shadow-soft"
+          data-tool="notebooklm"
+          data-category="research study"
+        >
+
+          <div class="flex items-start justify-between">
+
+            <div class="flex items-center gap-4">
+
+              <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-50 text-2xl">
+                📓
+              </div>
+
+              <div>
+                <h2 class="text-xl font-black">
+                  NotebookLM
+                </h2>
+
+                <p class="text-sm text-slate-500">
+                  AI research notebook
+                </p>
+              </div>
+
+            </div>
+
+            <span class="font-black text-slate-300">
+              #5
+            </span>
+
+          </div>
+
+          <div class="mt-5">
+            <span class="rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700">
+              Research
+            </span>
+          </div>
+
+          <p class="mt-4 text-sm leading-6 text-slate-600">
+            Useful for reviewing sources, course materials,
+            and uploaded documents.
+          </p>
+
+          <a
+            href="https://notebooklm.google.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="mt-6 block rounded-xl bg-indigo-600 px-4 py-3 text-center text-sm font-bold text-white hover:bg-indigo-700"
+          >
+            Try NotebookLM →
+          </a>
+
+        </article>
+
+
+        <!-- 6 -->
+
+        <article
+          class="tool-card rounded-3xl border border-slate-200 bg-white p-6 shadow-soft"
+          data-tool="grammarly"
+          data-category="writing productivity"
+        >
+
+          <div class="flex items-start justify-between">
+
+            <div class="flex items-center gap-4">
+
+              <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-50 text-2xl">
+                ✓
+              </div>
+
+              <div>
+                <h2 class="text-xl font-black">
+                  Grammarly
+                </h2>
+
+                <p class="text-sm text-slate-500">
+                  Writing assistant
+                </p>
+              </div>
+
+            </div>
+
+            <span class="font-black text-slate-300">
+              #6
+            </span>
+
+          </div>
+
+          <div class="mt-5">
+            <span class="rounded-full bg-violet-50 px-3 py-1 text-xs font-bold text-violet-700">
+              Writing
+            </span>
+          </div>
+
+          <p class="mt-4 text-sm leading-6 text-slate-600">
+            Helps improve grammar, clarity, tone, and overall
+            writing quality.
+          </p>
+
+          <a
+            href="https://www.grammarly.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="mt-6 block rounded-xl bg-indigo-600 px-4 py-3 text-center text-sm font-bold text-white hover:bg-indigo-700"
+          >
+            Try Grammarly →
+          </a>
+
+        </article>
+
+
+        <!-- 7 -->
+
+        <article
+          class="tool-card rounded-3xl border border-slate-200 bg-white p-6 shadow-soft"
+          data-tool="quizlet"
+          data-category="study"
+        >
+
+          <div class="flex items-start justify-between">
+
+            <div class="flex items-center gap-4">
+
+              <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50 text-2xl">
+                🧠
+              </div>
+
+              <div>
+                <h2 class="text-xl font-black">
+                  Quizlet
+                </h2>
+
+                <p class="text-sm text-slate-500">
+                  Study platform
+                </p>
+              </div>
+
+            </div>
+
+            <span class="font-black text-slate-300">
+              #7
+            </span>
+
+          </div>
+
+          <div class="mt-5">
+            <span class="rounded-full bg-indigo-50 px-3 py-1 text-xs font-bold text-indigo-700">
+              Study
+            </span>
+          </div>
+
+          <p class="mt-4 text-sm leading-6 text-slate-600">
+            Helps students practice material with flashcards
+            and other study activities.
+          </p>
+
+          <a
+            href="https://quizlet.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="mt-6 block rounded-xl bg-indigo-600 px-4 py-3 text-center text-sm font-bold text-white hover:bg-indigo-700"
+          >
+            Try Quizlet →
+          </a>
+
+        </article>
+
+
+        <!-- 8 -->
+
+        <article
+          class="tool-card rounded-3xl border border-slate-200 bg-white p-6 shadow-soft"
+          data-tool="wolfram alpha"
+          data-category="study research"
+        >
+
+          <div class="flex items-start justify-between">
+
+            <div class="flex items-center gap-4">
+
+              <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-purple-50 text-2xl">
+                ∑
+              </div>
+
+              <div>
+                <h2 class="text-xl font-black">
+                  Wolfram Alpha
+                </h2>
+
+                <p class="text-sm text-slate-500">
+                  Computational knowledge
+                </p>
+              </div>
+
+            </div>
+
+            <span class="font-black text-slate-300">
+              #8
+            </span>
+
+          </div>
+
+          <div class="mt-5">
+            <span class="rounded-full bg-indigo-50 px-3 py-1 text-xs font-bold text-indigo-700">
+              Study
+            </span>
+          </div>
+
+          <p class="mt-4 text-sm leading-6 text-slate-600">
+            Useful for mathematics, science, equations,
+            calculations, and STEM subjects.
+          </p>
+
+          <a
+            href="https://www.wolframalpha.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="mt-6 block rounded-xl bg-indigo-600 px-4 py-3 text-center text-sm font-bold text-white hover:bg-indigo-700"
+          >
+            Try Wolfram Alpha →
+          </a>
+
+        </article>
+
+
+        <!-- 9 -->
+
+        <article
+          class="tool-card rounded-3xl border border-slate-200 bg-white p-6 shadow-soft"
+          data-tool="elicit"
+          data-category="research"
+        >
+
+          <div class="flex items-start justify-between">
+
+            <div class="flex items-center gap-4">
+
+              <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-50 text-2xl">
+                📚
+              </div>
+
+              <div>
+                <h2 class="text-xl font-black">
+                  Elicit
+                </h2>
+
+                <p class="text-sm text-slate-500">
+                  Research assistant
+                </p>
+              </div>
+
+            </div>
+
+            <span class="font-black text-slate-300">
+              #9
+            </span>
+
+          </div>
+
+          <div class="mt-5">
+            <span class="rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700">
+              Research
+            </span>
+          </div>
+
+          <p class="mt-4 text-sm leading-6 text-slate-600">
+            Designed around academic research workflows
+            and finding useful information from papers.
+          </p>
+
+          <a
+            href="https://elicit.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="mt-6 block rounded-xl bg-indigo-600 px-4 py-3 text-center text-sm font-bold text-white hover:bg-indigo-700"
+          >
+            Try Elicit →
+          </a>
+
+        </article>
+
+
+        <!-- 10 -->
+
+        <article
+          class="tool-card rounded-3xl border border-slate-200 bg-white p-6 shadow-soft"
+          data-tool="consensus"
+          data-category="research study"
+        >
+
+          <div class="flex items-start justify-between">
+
+            <div class="flex items-center gap-4">
+
+              <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-rose-50 text-2xl">
+                🔬
+              </div>
+
+              <div>
+                <h2 class="text-xl font-black">
+                  Consensus
+                </h2>
+
+                <p class="text-sm text-slate-500">
+                  Academic search
+                </p>
+              </div>
+
+            </div>
+
+            <span class="font-black text-slate-300">
+              #10
+            </span>
+
+          </div>
+
+          <div class="mt-5">
+            <span class="rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700">
+              Research
+            </span>
+          </div>
+
+          <p class="mt-4 text-sm leading-6 text-slate-600">
+            Helps students explore scientific literature
+            and research questions.
+          </p>
+
+          <a
+            href="https://consensus.app/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="mt-6 block rounded-xl bg-indigo-600 px-4 py-3 text-center text-sm font-bold text-white hover:bg-indigo-700"
+          >
+            Try Consensus →
+          </a>
+
+        </article>
+
+      </div>
+
+    </div>
+
+  </main>
+
+</section>
+
+
+<!-- =========================================================
+     FOOTER
+========================================================= -->
+
+<footer class="border-t border-slate-200 bg-white px-5 py-8">
+
+  <div class="mx-auto max-w-7xl text-center">
+
+    <p class="text-sm font-bold text-slate-700">
+      Study<span class="text-indigo-600">AI</span>
+    </p>
+
+    <p class="mt-1 text-xs text-slate-400">
+      Study smarter. Discover useful AI tools.
+    </p>
+
+  </div>
+
+</footer>
+
+
+<script>
+
+  /* =========================================================
+     DARK MODE
+  ========================================================= */
+
+  function applyTheme(isDark) {
+    document.body.classList.toggle("dark-mode", isDark);
+
+    const button = document.getElementById("themeToggle");
+    if (button) {
+      button.textContent = isDark ? "☀️ Light" : "🌙 Dark";
+      button.setAttribute(
+        "aria-label",
+        isDark ? "Switch to light mode" : "Switch to dark mode"
+      );
+    }
+
+    try {
+      localStorage.setItem("studyAITheme", isDark ? "dark" : "light");
+    } catch (error) {
+      // The theme still works if browser storage is unavailable.
+    }
+  }
+
+  function toggleDarkMode() {
+    applyTheme(!document.body.classList.contains("dark-mode"));
+  }
+
+  try {
+    applyTheme(
+      localStorage.getItem("studyAITheme") === "dark"
+    );
+  } catch (error) {
+    applyTheme(false);
+  }
+
+
+  /* =========================================================
+     PAGE NAVIGATION
+  ========================================================= */
+
+  function showPage(page) {
+
+    const pages = {
+      home: document.getElementById("homePage"),
+      study: document.getElementById("studyPage"),
+      tools: document.getElementById("toolsPage")
+    };
+
+    Object.values(pages).forEach(p => {
+      p.classList.remove("active");
+    });
+
+    pages[page].classList.add("active");
+
+    const backButton =
+      document.getElementById("backButton");
+
+    if (page === "home") {
+      backButton.classList.add("hidden");
+    } else {
+      backButton.classList.remove("hidden");
+    }
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  }
+
+
+  /* =========================================================
+     YOUTUBE SEARCH
+  ========================================================= */
+
+  function youtubeTopic(topic) {
+
+    const url =
+      "https://www.youtube.com/results?search_query=" +
+      encodeURIComponent(topic);
+
+    window.open(url, "_blank", "noopener,noreferrer");
+  }
+
+
+  function searchYouTube() {
+
+    const input =
+      document.getElementById("youtubeSearch");
+
+    const query =
+      input.value.trim();
+
+    if (!query) {
+
+      input.focus();
+
+      return;
+
+    }
+
+    youtubeTopic(query);
+  }
+
+
+  document
+    .getElementById("youtubeSearch")
+    .addEventListener("keydown", event => {
+
+      if (event.key === "Enter") {
+        searchYouTube();
+      }
+
+    });
+
+
+  /* =========================================================
+     RANDOM STUDY TIPS
+  ========================================================= */
+
+  const studyTips = [
+
+    "Use active recall: close your notes and try to explain the topic from memory.",
+
+    "Study one clear goal at a time instead of trying to finish everything at once.",
+
+    "Try a 25-minute focused study session followed by a short break.",
+
+    "When learning a difficult concept, explain it using simple words.",
+
+    "Mix practice questions with reading so you can test whether you actually understand the material.",
+
+    "Review important material over multiple days instead of relying entirely on one long session.",
+
+    "Put your phone somewhere you cannot easily reach it during focused study.",
+
+    "If you get stuck, write down exactly what you do not understand before looking for help.",
+
+    "Use practice problems to find your weak areas before an exam.",
+
+    "Take short breaks during long study sessions so you can return with better attention.",
+
+    "Try teaching the topic to an imaginary student. If you cannot explain it clearly, review that part.",
+
+    "Start your study session by deciding exactly what you want to accomplish."
+  ];
+
+
+  function newTip() {
+
+    const element =
+      document.getElementById("randomTip");
+
+    const random =
+      Math.floor(Math.random() * studyTips.length);
+
+    element.classList.remove("tip-animation");
+
+    void element.offsetWidth;
+
+    element.textContent =
+      studyTips[random];
+
+    element.classList.add("tip-animation");
+  }
+
+
+  /* =========================================================
+     POMODORO TIMER
+  ========================================================= */
+
+  let timerSeconds = 25 * 60;
+  let timerInterval = null;
+
+
+  function updateTimerDisplay() {
+
+    const minutes =
+      Math.floor(timerSeconds / 60);
+
+    const seconds =
+      timerSeconds % 60;
+
+    document.getElementById("timer").textContent =
+      String(minutes).padStart(2, "0") +
+      ":" +
+      String(seconds).padStart(2, "0");
+  }
+
+
+  function startTimer() {
+
+    if (timerInterval !== null) {
+      return;
+    }
+
+    document.getElementById("timerStatus").textContent =
+      "Focus — you've got this!";
+
+    timerInterval = setInterval(() => {
+
+      if (timerSeconds <= 0) {
+
+        clearInterval(timerInterval);
+
+        timerInterval = null;
+
+        document.getElementById("timerStatus").textContent =
+          "🎉 Focus session complete! Take a short break.";
+
+        timerSeconds = 25 * 60;
+
+        updateTimerDisplay();
+
+        return;
+      }
+
+      timerSeconds--;
+
+      updateTimerDisplay();
+
+    }, 1000);
+  }
+
+
+  function pauseTimer() {
+
+    if (timerInterval !== null) {
+
+      clearInterval(timerInterval);
+
+      timerInterval = null;
+
+      document.getElementById("timerStatus").textContent =
+        "Paused. Start again when you're ready.";
+
+    }
+  }
+
+
+  function resetTimer() {
+
+    clearInterval(timerInterval);
+
+    timerInterval = null;
+
+    timerSeconds = 25 * 60;
+
+    updateTimerDisplay();
+
+    document.getElementById("timerStatus").textContent =
+      "Focus for 25 minutes.";
+  }
+
+
+  /* =========================================================
+     CHECKLIST
+  ========================================================= */
+
+  document
+    .querySelectorAll(".check-item")
+    .forEach(checkbox => {
+
+      checkbox.addEventListener("change", () => {
+
+        const label =
+          checkbox.parentElement;
+
+        const text =
+          label.querySelector("span");
+
+        if (checkbox.checked) {
+
+          text.classList.add(
+            "line-through",
+            "text-slate-400"
+          );
+
+        } else {
+
+          text.classList.remove(
+            "line-through",
+            "text-slate-400"
+          );
+
+        }
+
+      });
+
+    });
+
+
+  /* =========================================================
+     AI TOOL SEARCH
+  ========================================================= */
+
+  const toolSearch =
+    document.getElementById("toolSearch");
+
+  const toolCards =
+    [...document.querySelectorAll(".tool-card")];
+
+  const toolFilters =
+    [...document.querySelectorAll(".tool-filter")];
+
+  let activeFilter = "all";
+
+
+  function filterTools() {
+
+    const search =
+      toolSearch.value.toLowerCase().trim();
+
+    toolCards.forEach(card => {
+
+      const name =
+        card.dataset.tool.toLowerCase();
+
+      const category =
+        card.dataset.category.toLowerCase();
+
+      const matchesSearch =
+        !search ||
+        name.includes(search) ||
+        category.includes(search);
+
+      const matchesFilter =
+        activeFilter === "all" ||
+        category.includes(activeFilter);
+
+      card.classList.toggle(
+        "hidden-tool",
+        !(matchesSearch && matchesFilter)
+      );
+
+    });
+  }
+
+
+  toolSearch.addEventListener(
+    "input",
+    filterTools
+  );
+
+
+  toolFilters.forEach(button => {
+
+    button.addEventListener("click", () => {
+
+      activeFilter =
+        button.dataset.filter;
+
+      toolFilters.forEach(btn => {
+
+        btn.classList.remove(
+          "bg-slate-900",
+          "text-white"
+        );
+
+        btn.classList.add(
+          "bg-white",
+          "text-slate-600"
+        );
+
+      });
+
+      button.classList.remove(
+        "bg-white",
+        "text-slate-600"
+      );
+
+      button.classList.add(
+        "bg-slate-900",
+        "text-white"
+      );
+
+      filterTools();
+
+    });
+
+  });
+
+</script>
+
+</body>
+</html>
